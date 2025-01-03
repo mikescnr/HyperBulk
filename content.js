@@ -130,3 +130,13 @@ document.addEventListener('keydown', (e) => {
         e.preventDefault();
     }
 });
+
+// Cancel dragging when ALT key is released
+document.addEventListener('keyup', (e) => {
+    if (e.key === 'Alt' && isDragging) {
+        isDragging = false;
+
+        if (selectionBox) document.body.removeChild(selectionBox);
+        if (linkCountDisplay) document.body.removeChild(linkCountDisplay);
+    }
+});
