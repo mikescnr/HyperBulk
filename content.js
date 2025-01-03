@@ -142,9 +142,26 @@ document.addEventListener('mouseup', (e) => {
             }
         });
 
-        // Open all selected links
-        selectedLinks.forEach(link => {
-            window.open(link.href, '_blank');
+        // Load the maxLinks setting from storage
+        chrome.storage.sync.get({ maxLinks: 10 }, (settings) => {
+            const maxLinks = settings.maxLinks;
+
+            if (maxLinks > 0 && selectedLinks.length > maxLinks) {
+                // Show a warning if the number of links exceeds maxLinks
+                const confirmation = confirm(`You are trying to open ${selectedLinks.length} links. Are you sure?`);
+
+                if (confirmation) {
+                    // Open all selected links
+                    selectedLinks.forEach(link => {
+                        window.open(link.href, '_blank');
+                    });
+                }
+            } else {
+                // Open all selected links if it's within the limit or no limit
+                selectedLinks.forEach(link => {
+                    window.open(link.href, '_blank');
+                });
+            }
         });
 
         // Clean up

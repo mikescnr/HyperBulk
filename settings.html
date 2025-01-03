@@ -21,6 +21,9 @@
         input[type="range"] {
             width: 200px;
         }
+        input[type="number"] {
+            width: 60px;
+        }
         button {
             margin-top: 20px;
             padding: 10px 20px;
@@ -61,6 +64,9 @@
     <label for="selectionBoxTransparency">Selection Box Transparency:</label>
     <input type="range" id="selectionBoxTransparency" name="selectionBoxTransparency" min="0" max="100" value="20">
     <span id="transparencyValue">20%</span>
+
+    <label for="maxLinks">Maximum Links to Open:</label>
+    <input type="number" id="maxLinks" name="maxLinks" min="0" value="10">
 
     <div class="button-group">
         <button id="save-button">Save Settings</button>

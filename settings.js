@@ -1,10 +1,11 @@
-// Default color constants
+// Default color constants and new maxLinks setting
 const DEFAULTS = {
     selectionBoxColor: 'rgba(0, 120, 215, 0.2)',  // Semi-transparent blue
     borderColor: '#005a8c',                      // Darker blue border
     counterBgColor: '#0078d7',                   // Blue background for counter
     counterTextColor: '#ffffff',                 // White text for the counter
-    selectionBoxTransparency: 20                 // Default transparency 20%
+    selectionBoxTransparency: 20,                 // Default transparency 20%
+    maxLinks: 10                                 // Default max links to 10
 };
 
 // Function to load settings from chrome storage and apply them
@@ -16,6 +17,7 @@ function loadSettings() {
         document.getElementById('counterBgColor').value = settings.counterBgColor;
         document.getElementById('selectionBoxTransparency').value = settings.selectionBoxTransparency;
         document.getElementById('transparencyValue').textContent = `${settings.selectionBoxTransparency}%`;
+        document.getElementById('maxLinks').value = settings.maxLinks; // Load maxLinks value
 
         console.log('Loaded settings:', settings);
     });
@@ -27,6 +29,7 @@ document.getElementById('save-button').addEventListener('click', () => {
     const borderColor = document.getElementById('borderColor').value;
     const counterBgColor = document.getElementById('counterBgColor').value;
     const selectionBoxTransparency = document.getElementById('selectionBoxTransparency').value;
+    const maxLinks = document.getElementById('maxLinks').value; // Get maxLinks value
 
     // Apply transparency to the selection box color
     selectionBoxColor = hexToRgba(selectionBoxColor, selectionBoxTransparency / 100);
@@ -48,7 +51,8 @@ document.getElementById('save-button').addEventListener('click', () => {
             borderColor,
             counterBgColor,
             counterTextColor,
-            selectionBoxTransparency
+            selectionBoxTransparency,
+            maxLinks // Save maxLinks value
         },
         () => {
             console.log('Settings saved:', {
@@ -56,7 +60,8 @@ document.getElementById('save-button').addEventListener('click', () => {
                 borderColor,
                 counterBgColor,
                 counterTextColor,
-                selectionBoxTransparency
+                selectionBoxTransparency,
+                maxLinks
             });
         }
     );
@@ -70,6 +75,7 @@ document.getElementById('reset-button').addEventListener('click', () => {
     document.getElementById('counterBgColor').value = DEFAULTS.counterBgColor;
     document.getElementById('selectionBoxTransparency').value = DEFAULTS.selectionBoxTransparency;
     document.getElementById('transparencyValue').textContent = `${DEFAULTS.selectionBoxTransparency}%`;
+    document.getElementById('maxLinks').value = DEFAULTS.maxLinks; // Restore maxLinks default
 
     // Save defaults to storage
     chrome.storage.sync.set(DEFAULTS, () => {
