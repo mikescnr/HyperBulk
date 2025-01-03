@@ -4,10 +4,8 @@ const DEFAULTS = {
     borderColor: '#005a8c',                      // Darker blue border
     counterBgColor: '#0078d7',                   // Blue background for counter
     counterTextColor: '#ffffff',                 // White text for the counter
+    selectionBoxTransparency: 20                 // Default transparency 20%
 };
-
-// Transparency constant for selection box
-const TRANSPARENCY = 0.2;
 
 // Function to load settings from chrome storage and apply them
 function loadSettings() {
@@ -16,6 +14,8 @@ function loadSettings() {
         document.getElementById('selectionBoxColor').value = rgbToHex(settings.selectionBoxColor);
         document.getElementById('borderColor').value = settings.borderColor;
         document.getElementById('counterBgColor').value = settings.counterBgColor;
+        document.getElementById('selectionBoxTransparency').value = settings.selectionBoxTransparency;
+        document.getElementById('transparencyValue').textContent = `${settings.selectionBoxTransparency}%`;
 
         console.log('Loaded settings:', settings);
     });
@@ -26,9 +26,10 @@ document.getElementById('save-button').addEventListener('click', () => {
     let selectionBoxColor = document.getElementById('selectionBoxColor').value;
     const borderColor = document.getElementById('borderColor').value;
     const counterBgColor = document.getElementById('counterBgColor').value;
+    const selectionBoxTransparency = document.getElementById('selectionBoxTransparency').value;
 
     // Apply transparency to the selection box color
-    selectionBoxColor = hexToRgba(selectionBoxColor, TRANSPARENCY);
+    selectionBoxColor = hexToRgba(selectionBoxColor, selectionBoxTransparency / 100);
 
     let counterTextColor = '#ffffff'; // Default white text
 
@@ -46,14 +47,16 @@ document.getElementById('save-button').addEventListener('click', () => {
             selectionBoxColor,
             borderColor,
             counterBgColor,
-            counterTextColor
+            counterTextColor,
+            selectionBoxTransparency
         },
         () => {
             console.log('Settings saved:', {
                 selectionBoxColor,
                 borderColor,
                 counterBgColor,
-                counterTextColor
+                counterTextColor,
+                selectionBoxTransparency
             });
         }
     );
@@ -65,6 +68,8 @@ document.getElementById('reset-button').addEventListener('click', () => {
     document.getElementById('selectionBoxColor').value = rgbToHex(DEFAULTS.selectionBoxColor);
     document.getElementById('borderColor').value = DEFAULTS.borderColor;
     document.getElementById('counterBgColor').value = DEFAULTS.counterBgColor;
+    document.getElementById('selectionBoxTransparency').value = DEFAULTS.selectionBoxTransparency;
+    document.getElementById('transparencyValue').textContent = `${DEFAULTS.selectionBoxTransparency}%`;
 
     // Save defaults to storage
     chrome.storage.sync.set(DEFAULTS, () => {
@@ -107,6 +112,12 @@ function hexToRgba(hex, transparency) {
     const rgb = hexToRgb(hex);
     return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${transparency})`;
 }
+
+// Update transparency value display
+document.getElementById('selectionBoxTransparency').addEventListener('input', (e) => {
+    const transparencyValue = e.target.value;
+    document.getElementById('transparencyValue').textContent = `${transparencyValue}%`;
+});
 
 // Load settings when the settings page is loaded
 loadSettings();

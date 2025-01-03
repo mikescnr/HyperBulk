@@ -14,7 +14,7 @@ chrome.storage.sync.get({
 });
 
 function applySettings(settings) {
-    // Update selection box color and border
+    // Apply the selection box color with the proper transparency
     selectionBox.style.background = settings.selectionBoxColor;
     selectionBox.style.border = `2px dashed ${settings.borderColor}`;
 
