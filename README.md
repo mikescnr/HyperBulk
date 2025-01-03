@@ -18,7 +18,7 @@ This extension consists of the following files:
 | `styles.css`    | Element styling                                       |
 
 # Installation
-To add this to Chrome, follow this guide:
+To add this to Chrome, download the repo and follow this guide to install it:
 https://knowledge.workspace.google.com/kb/load-unpacked-extensions-000005962
 
 # Operation
