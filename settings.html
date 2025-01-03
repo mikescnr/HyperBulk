@@ -30,6 +30,18 @@
         button:hover {
             background-color: #005a8c;
         }
+        .button-group {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+        }
+        .reset-button {
+            background-color: #d9534f;
+        }
+        .reset-button:hover {
+            background-color: #c9302c;
+        }
     </style>
 </head>
 <body>
@@ -46,7 +58,10 @@
     <label for="counterTextColor">Counter Text Color:</label>
     <input type="color" id="counterTextColor" name="counterTextColor" value="#ffffff">
 
-    <button id="save-button">Save Settings</button>
+    <div class="button-group">
+        <button id="save-button">Save Settings</button>
+        <button class="reset-button" id="reset-button">Restore Defaults</button>
+    </div>
 
     <script src="settings.js"></script>
 </body>
