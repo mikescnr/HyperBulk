@@ -1,6 +1,7 @@
 let isDragging = false;
 let isClick = false; // Flag for click vs drag
 let startX, startY, selectionBox, linkCountDisplay;
+let highlightedLinks = []; // Array to track highlighted links
 
 // Load settings from chrome storage
 chrome.storage.sync.get({
@@ -94,9 +95,16 @@ document.addEventListener('mousemove', (e) => {
                 linkRect.top <= rect.bottom
             ) {
                 link.style.backgroundColor = 'rgba(0, 120, 215, 0.3)'; // Highlighted background
+                if (!highlightedLinks.includes(link)) {
+                    highlightedLinks.push(link); // Track highlighted link
+                }
                 selectedLinks.push(link);
             } else {
                 link.style.backgroundColor = ''; // Reset background for non-selected links
+                const index = highlightedLinks.indexOf(link);
+                if (index !== -1) {
+                    highlightedLinks.splice(index, 1); // Remove from tracked highlighted links
+                }
             }
         });
 
@@ -143,6 +151,13 @@ document.addEventListener('mouseup', (e) => {
         document.body.removeChild(selectionBox);
         document.body.removeChild(linkCountDisplay);
 
+        // Reset the highlight for all links
+        highlightedLinks.forEach(link => {
+            link.style.backgroundColor = ''; // Reset highlight
+        });
+
+        highlightedLinks = []; // Clear the tracked highlighted links
+
         e.preventDefault();
     }
 
@@ -166,6 +181,8 @@ document.addEventListener('keydown', (e) => {
         document.querySelectorAll('a').forEach(link => {
             link.style.backgroundColor = ''; // Reset highlight
         });
+
+        highlightedLinks = []; // Clear the tracked highlighted links
 
         e.preventDefault();
     }
