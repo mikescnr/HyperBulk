@@ -1,37 +1,43 @@
+// Default color constants
+const DEFAULTS = {
+    selectionBoxColor: 'rgba(0, 120, 215, 0.2)',  // Semi-transparent blue
+    borderColor: '#005a8c',                      // Darker blue border
+    counterBgColor: '#0078d7',                   // Blue background for counter
+    counterTextColor: '#ffffff',                 // White text for the counter
+};
+
+// Transparency constant for selection box
+const TRANSPARENCY = 0.2;
+
 // Function to load settings from chrome storage and apply them
 function loadSettings() {
-    chrome.storage.sync.get(
-        {
-            selectionBoxColor: '#0078d7',  // Default selection box color
-            borderColor: '#005a8c',        // Default border color
-            counterBgColor: '#0078d7',     // Default counter background color
-            counterTextColor: '#ffffff'    // Default counter text color
-        },
-        (settings) => {
-            // Apply the loaded settings to the inputs
-            document.getElementById('selectionBoxColor').value = settings.selectionBoxColor;
-            document.getElementById('borderColor').value = settings.borderColor;
-            document.getElementById('counterBgColor').value = settings.counterBgColor;
-            document.getElementById('counterTextColor').value = settings.counterTextColor;
+    chrome.storage.sync.get(DEFAULTS, (settings) => {
+        // Apply the loaded settings to the inputs
+        document.getElementById('selectionBoxColor').value = rgbToHex(settings.selectionBoxColor);
+        document.getElementById('borderColor').value = settings.borderColor;
+        document.getElementById('counterBgColor').value = settings.counterBgColor;
 
-            console.log('Loaded settings:', settings);
-        }
-    );
+        console.log('Loaded settings:', settings);
+    });
 }
 
 // Function to save the settings to chrome storage
 document.getElementById('save-button').addEventListener('click', () => {
-    const selectionBoxColor = document.getElementById('selectionBoxColor').value;
+    let selectionBoxColor = document.getElementById('selectionBoxColor').value;
     const borderColor = document.getElementById('borderColor').value;
     const counterBgColor = document.getElementById('counterBgColor').value;
-    let counterTextColor = document.getElementById('counterTextColor').value;
+
+    // Apply transparency to the selection box color
+    selectionBoxColor = hexToRgba(selectionBoxColor, TRANSPARENCY);
+
+    let counterTextColor = '#ffffff'; // Default white text
 
     // Check if automatic text color is enabled based on counter background color
     if (counterBgColor) {
         const bgColor = hexToRgb(counterBgColor);
         if (bgColor) {
             const brightness = (0.2126 * bgColor.r + 0.7152 * bgColor.g + 0.0722 * bgColor.b);
-            counterTextColor = brightness > 128 ? '#000000' : '#ffffff';
+            counterTextColor = brightness > 128 ? '#000000' : '#ffffff'; // Black for light, white for dark
         }
     }
 
@@ -55,21 +61,13 @@ document.getElementById('save-button').addEventListener('click', () => {
 
 // Function to reset the settings to defaults
 document.getElementById('reset-button').addEventListener('click', () => {
-    const defaultSettings = {
-        selectionBoxColor: '#0078d7',
-        borderColor: '#005a8c',
-        counterBgColor: '#0078d7',
-        counterTextColor: '#ffffff'
-    };
-
     // Apply default values
-    document.getElementById('selectionBoxColor').value = defaultSettings.selectionBoxColor;
-    document.getElementById('borderColor').value = defaultSettings.borderColor;
-    document.getElementById('counterBgColor').value = defaultSettings.counterBgColor;
-    document.getElementById('counterTextColor').value = defaultSettings.counterTextColor;
+    document.getElementById('selectionBoxColor').value = rgbToHex(DEFAULTS.selectionBoxColor);
+    document.getElementById('borderColor').value = DEFAULTS.borderColor;
+    document.getElementById('counterBgColor').value = DEFAULTS.counterBgColor;
 
     // Save defaults to storage
-    chrome.storage.sync.set(defaultSettings, () => {
+    chrome.storage.sync.set(DEFAULTS, () => {
         console.log('Defaults restored');
     });
 });
@@ -92,6 +90,22 @@ function hexToRgb(hex) {
     }
 
     return { r, g, b };
+}
+
+// Helper function to convert rgba color to hex for the input
+function rgbToHex(rgba) {
+    if (!rgba || !rgba.startsWith('rgba')) return rgba;
+    const rgbaValues = rgba.match(/\d+/g); // Extract numbers from rgba
+    const r = parseInt(rgbaValues[0]);
+    const g = parseInt(rgbaValues[1]);
+    const b = parseInt(rgbaValues[2]);
+    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+}
+
+// Helper function to convert HEX to RGBA, applying transparency
+function hexToRgba(hex, transparency) {
+    const rgb = hexToRgb(hex);
+    return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${transparency})`;
 }
 
 // Load settings when the settings page is loaded
