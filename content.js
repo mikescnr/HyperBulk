@@ -4,7 +4,7 @@ let startX, startY, selectionBox, linkCountDisplay;
 
 document.addEventListener('mousedown', (e) => {
     if (e.altKey && e.button === 0) { // Alt + Left Click
-        isClick = true; // It's a click (no drag yet)
+        isClick = true; // Set the flag to true for a click (not a drag yet)
         isDragging = false; // Reset dragging initially
         startX = e.pageX;
         startY = e.pageY;
@@ -84,7 +84,7 @@ document.addEventListener('mousemove', (e) => {
 document.addEventListener('mouseup', (e) => {
     if (isClick && !isDragging) {
         // If it's just a click and not a drag, reset the click flag
-        isClick = false;
+        isClick = false; // Reset the click flag
         return; // Prevent opening links
     }
 
@@ -119,8 +119,8 @@ document.addEventListener('mouseup', (e) => {
         e.preventDefault();
     }
 
-    // Reset the flags
-    isClick = false;
+    // Reset the click flag if ALT is no longer held
+    isClick = false; // Reset click flag after mouseup
 });
 
 document.addEventListener('keydown', (e) => {
@@ -145,20 +145,22 @@ document.addEventListener('keydown', (e) => {
 });
 
 document.addEventListener('keyup', (e) => {
-    if (e.key === 'Alt' && isClick) {
-        isClick = false; // Reset click flag
+    if (e.key === 'Alt') {
+        // When ALT is released, reset the click flag
+        isClick = false; // Make sure click flag is reset
         isDragging = false; // Reset dragging flag
-
-        if (selectionBox && selectionBox.parentNode) {
-            document.body.removeChild(selectionBox);
-        }
-        if (linkCountDisplay && linkCountDisplay.parentNode) {
-            document.body.removeChild(linkCountDisplay);
-        }
-
-        // Reset link backgrounds if ALT is released
-        document.querySelectorAll('a').forEach(link => {
-            link.style.backgroundColor = ''; // Reset highlight
-        });
     }
+
+    // If ALT is released, reset background of all links
+    if (selectionBox && selectionBox.parentNode) {
+        document.body.removeChild(selectionBox);
+    }
+    if (linkCountDisplay && linkCountDisplay.parentNode) {
+        document.body.removeChild(linkCountDisplay);
+    }
+
+    // Reset link backgrounds if ALT is released
+    document.querySelectorAll('a').forEach(link => {
+        link.style.backgroundColor = ''; // Reset highlight
+    });
 });
