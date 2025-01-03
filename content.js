@@ -36,7 +36,7 @@ document.addEventListener('mousedown', (e) => {
 });
 
 document.addEventListener('mousemove', (e) => {
-    if (isClick && !isDragging && (Math.abs(e.pageX - startX) > 5 || Math.abs(e.pageY - startY) > 5)) {
+    if (isClick && !isDragging && Math.abs(e.pageX - startX) > 5 || Math.abs(e.pageY - startY) > 5) {
         isDragging = true; // If there is significant movement, start dragging
     }
 
@@ -62,8 +62,10 @@ document.addEventListener('mousemove', (e) => {
             );
         });
         linkCountDisplay.textContent = `Links: ${links.length}`;
-        linkCountDisplay.style.left = `${rect.right}px`;
-        linkCountDisplay.style.top = `${rect.bottom}px`;
+
+        // Position the link count display relative to the cursor
+        linkCountDisplay.style.left = `${e.pageX + 10}px`; // Slight offset from cursor
+        linkCountDisplay.style.top = `${e.pageY + 10}px`; // Slight offset from cursor
     }
 });
 
@@ -105,7 +107,6 @@ document.addEventListener('keydown', (e) => {
         isClick = false; // Reset click flag
         isDragging = false;
 
-        // Check if the selectionBox exists before attempting to remove it
         if (selectionBox && selectionBox.parentNode) {
             document.body.removeChild(selectionBox);
         }
@@ -123,7 +124,6 @@ document.addEventListener('keyup', (e) => {
         isClick = false; // Reset click flag
         isDragging = false;
 
-        // Check if the selectionBox exists before attempting to remove it
         if (selectionBox && selectionBox.parentNode) {
             document.body.removeChild(selectionBox);
         }
