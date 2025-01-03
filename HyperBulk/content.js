@@ -119,19 +119,24 @@ document.addEventListener('mousemove', (e) => {
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
 
+        // Get the dimensions of the element
+        const elementWidth = linkCountDisplay.offsetWidth;
+        const elementHeight = linkCountDisplay.offsetHeight;
+
         // Debugging: log current xPos, yPos, and size
         console.log(`Original xPos: ${xPos}, yPos: ${yPos}`);
         console.log(`Viewport Width: ${viewportWidth}, Height: ${viewportHeight}`);
+        console.log(`Element Width: ${elementWidth}, Height: ${elementHeight}`);
 
         // Constrain x position to prevent overflow
-        if (xPos + linkCountDisplay.offsetWidth > viewportWidth) {
-            xPos = viewportWidth - linkCountDisplay.offsetWidth - offset;
+        if (xPos + elementWidth > viewportWidth) {
+            xPos = viewportWidth - elementWidth - offset; // Ensure it stops exactly at the edge
             console.log(`Constrained xPos: ${xPos}`);
         }
 
         // Constrain y position to prevent overflow
-        if (yPos + linkCountDisplay.offsetHeight > viewportHeight + window.scrollY) {
-            yPos = viewportHeight + window.scrollY - linkCountDisplay.offsetHeight - offset;
+        if (yPos + elementHeight > viewportHeight + window.scrollY) {
+            yPos = viewportHeight + window.scrollY - elementHeight - offset; // Ensure it stops exactly at the edge
             console.log(`Constrained yPos: ${yPos}`);
         }
 
