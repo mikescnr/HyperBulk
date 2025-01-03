@@ -61,6 +61,20 @@ document.addEventListener('mousemove', (e) => {
                 linkRect.top <= rect.bottom
             );
         });
+
+        // Highlight links within the selection box
+        document.querySelectorAll('a').forEach(link => {
+            const linkRect = link.getBoundingClientRect();
+            if (linkRect.right >= rect.left &&
+                linkRect.left <= rect.right &&
+                linkRect.bottom >= rect.top &&
+                linkRect.top <= rect.bottom) {
+                link.style.backgroundColor = 'rgba(0, 120, 215, 0.3)'; // Highlighted background
+            } else {
+                link.style.backgroundColor = ''; // Reset background for non-selected links
+            }
+        });
+
         linkCountDisplay.textContent = `Links: ${links.length}`;
 
         // Position the link count display relative to the cursor
@@ -114,6 +128,11 @@ document.addEventListener('keydown', (e) => {
             document.body.removeChild(linkCountDisplay);
         }
 
+        // Reset link backgrounds if ESC is pressed
+        document.querySelectorAll('a').forEach(link => {
+            link.style.backgroundColor = ''; // Reset highlight
+        });
+
         e.preventDefault();
     }
 });
@@ -130,5 +149,10 @@ document.addEventListener('keyup', (e) => {
         if (linkCountDisplay && linkCountDisplay.parentNode) {
             document.body.removeChild(linkCountDisplay);
         }
+
+        // Reset link backgrounds if ALT is released
+        document.querySelectorAll('a').forEach(link => {
+            link.style.backgroundColor = ''; // Reset highlight
+        });
     }
 });
