@@ -111,8 +111,34 @@ document.addEventListener('mousemove', (e) => {
         linkCountDisplay.textContent = `Links: ${selectedLinks.length}`;
 
         // Position the link count display relative to the cursor
-        linkCountDisplay.style.left = `${e.pageX + 10}px`; // Slight offset from cursor
-        linkCountDisplay.style.top = `${e.pageY + 10}px`; // Slight offset from cursor
+        const offset = 10; // Offset from cursor
+        let xPos = e.clientX + offset;  // Use clientX for horizontal positioning
+        let yPos = e.clientY + offset + window.scrollY;  // Use clientY + scrollY for vertical positioning
+
+        // Get the viewport dimensions
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        // Debugging: log current xPos, yPos, and size
+        console.log(`Original xPos: ${xPos}, yPos: ${yPos}`);
+        console.log(`Viewport Width: ${viewportWidth}, Height: ${viewportHeight}`);
+
+        // Constrain x position to prevent overflow
+        if (xPos + linkCountDisplay.offsetWidth > viewportWidth) {
+            xPos = viewportWidth - linkCountDisplay.offsetWidth - offset;
+            console.log(`Constrained xPos: ${xPos}`);
+        }
+
+        // Constrain y position to prevent overflow
+        if (yPos + linkCountDisplay.offsetHeight > viewportHeight + window.scrollY) {
+            yPos = viewportHeight + window.scrollY - linkCountDisplay.offsetHeight - offset;
+            console.log(`Constrained yPos: ${yPos}`);
+        }
+
+        // Set the final position of the display
+        linkCountDisplay.style.left = `${xPos}px`;
+        linkCountDisplay.style.top = `${yPos}px`;
+
     }
 });
 
