@@ -1,77 +1,45 @@
 let isDragging = false;
+let isClick = false; // New flag to check if it's a click (no drag)
 let startX, startY, selectionBox, linkCountDisplay;
-const defaultSelectionBoxColor = 'rgba(0, 120, 215, 0.2)';
-const defaultBorderColor = 'rgba(0, 120, 215, 0.7)';
-const defaultCounterBgColor = '#0078d7';
-const defaultCounterTextColor = '#fff';
-
-// Function to fetch colors from chrome.storage
-function getColorsFromStorage() {
-    return new Promise((resolve) => {
-        chrome.storage.sync.get(
-            {
-                selectionBoxColor: defaultSelectionBoxColor,
-                borderColor: defaultBorderColor,
-                counterBgColor: defaultCounterBgColor,
-                counterTextColor: defaultCounterTextColor
-            },
-            (settings) => {
-                console.log('Settings loaded from storage:', settings); // Add this log to check if colors are being loaded
-                resolve(settings);
-            }
-        );
-    });
-}
 
 document.addEventListener('mousedown', (e) => {
-    if (e.altKey && e.button === 0) { // ALT + Left Click
-        isDragging = true;
+    if (e.altKey && e.button === 0) { // Alt + Left Click
+        isClick = true; // Set the flag to true for a click
+        isDragging = false; // Make sure dragging flag is false initially
         startX = e.pageX;
         startY = e.pageY;
 
         // Prevent default behavior (like text selection)
         e.preventDefault();
 
-        // Fetch the colors before creating the box
-        getColorsFromStorage().then((settings) => {
-            const selectionBoxColor = settings.selectionBoxColor || defaultSelectionBoxColor;
-            const borderColor = settings.borderColor || defaultBorderColor;
-            const counterBgColor = settings.counterBgColor || defaultCounterBgColor;
-            const counterTextColor = settings.counterTextColor || defaultCounterTextColor;
+        // Create the selection box
+        selectionBox = document.createElement('div');
+        selectionBox.style.position = 'absolute';
+        selectionBox.style.background = 'rgba(0, 120, 215, 0.2)';
+        selectionBox.style.border = '2px dashed rgba(0, 120, 215, 0.7)';
+        selectionBox.style.zIndex = '10000';
+        document.body.appendChild(selectionBox);
 
-            // Log the color values that are being applied
-            console.log('Colors being applied:', {
-                selectionBoxColor,
-                borderColor,
-                counterBgColor,
-                counterTextColor
-            });
-
-            // Create the selection box
-            selectionBox = document.createElement('div');
-            selectionBox.style.position = 'absolute';
-            selectionBox.style.background = selectionBoxColor;
-            selectionBox.style.border = `2px dashed ${borderColor}`;
-            selectionBox.style.zIndex = '10000';
-            document.body.appendChild(selectionBox);
-
-            // Create the link count display
-            linkCountDisplay = document.createElement('div');
-            linkCountDisplay.style.position = 'absolute';
-            linkCountDisplay.style.background = counterBgColor;
-            linkCountDisplay.style.color = counterTextColor;
-            linkCountDisplay.style.padding = '2px 5px';
-            linkCountDisplay.style.borderRadius = '3px';
-            linkCountDisplay.style.fontSize = '12px';
-            linkCountDisplay.style.fontWeight = 'bold';
-            linkCountDisplay.style.pointerEvents = 'none';
-            linkCountDisplay.textContent = 'Links: 0';
-            document.body.appendChild(linkCountDisplay);
-        });
+        // Create the link count display
+        linkCountDisplay = document.createElement('div');
+        linkCountDisplay.style.position = 'absolute';
+        linkCountDisplay.style.background = '#0078d7';
+        linkCountDisplay.style.color = '#fff';
+        linkCountDisplay.style.padding = '2px 5px';
+        linkCountDisplay.style.borderRadius = '3px';
+        linkCountDisplay.style.fontSize = '12px';
+        linkCountDisplay.style.fontWeight = 'bold';
+        linkCountDisplay.style.pointerEvents = 'none';
+        linkCountDisplay.textContent = 'Links: 0';
+        document.body.appendChild(linkCountDisplay);
     }
 });
 
 document.addEventListener('mousemove', (e) => {
+    if (isClick && !isDragging && (Math.abs(e.pageX - startX) > 5 || Math.abs(e.pageY - startY) > 5)) {
+        isDragging = true; // If there is significant movement, start dragging
+    }
+
     if (isDragging) {
         const x = Math.min(e.pageX, startX);
         const y = Math.min(e.pageY, startY);
@@ -93,7 +61,6 @@ document.addEventListener('mousemove', (e) => {
                 linkRect.top <= rect.bottom
             );
         });
-
         linkCountDisplay.textContent = `Links: ${links.length}`;
         linkCountDisplay.style.left = `${rect.right}px`;
         linkCountDisplay.style.top = `${rect.bottom}px`;
@@ -101,11 +68,16 @@ document.addEventListener('mousemove', (e) => {
 });
 
 document.addEventListener('mouseup', (e) => {
+    if (isClick && !isDragging) {
+        // If it's just a click and not a drag, do nothing
+        isClick = false; // Reset click flag
+        return; // Prevent link opening
+    }
+
     if (isDragging) {
         isDragging = false;
 
         const rect = selectionBox.getBoundingClientRect();
-
         const links = Array.from(document.querySelectorAll('a')).filter(link => {
             const linkRect = link.getBoundingClientRect();
             return (
@@ -116,9 +88,8 @@ document.addEventListener('mouseup', (e) => {
             );
         });
 
-        // Open the selected links
         links.forEach(link => {
-            window.open(link.href, '_blank');  // Open in new tab
+            window.open(link.href, '_blank');
         });
 
         document.body.removeChild(selectionBox);
@@ -130,7 +101,8 @@ document.addEventListener('mouseup', (e) => {
 
 // Cancel dragging with ESC key
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isDragging) {
+    if (e.key === 'Escape' && (isClick || isDragging)) {
+        isClick = false; // Reset click flag
         isDragging = false;
 
         if (selectionBox) document.body.removeChild(selectionBox);
@@ -140,9 +112,10 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Cancel dragging when ALT key is released
+// Cancel dragging with ALT key release
 document.addEventListener('keyup', (e) => {
-    if (e.key === 'Alt' && isDragging) {
+    if (e.key === 'Alt' && isClick) {
+        isClick = false; // Reset click flag
         isDragging = false;
 
         if (selectionBox) document.body.removeChild(selectionBox);
