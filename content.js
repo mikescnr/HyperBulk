@@ -2,6 +2,27 @@ let isDragging = false;
 let isClick = false; // Flag for click vs drag
 let startX, startY, selectionBox, linkCountDisplay;
 
+// Load settings from chrome storage
+chrome.storage.sync.get({
+    selectionBoxColor: 'rgba(0, 120, 215, 0.2)', // Default value
+    borderColor: '#005a8c', // Default value
+    counterBgColor: '#0078d7', // Default value
+    counterTextColor: '#ffffff' // Default value
+}, (settings) => {
+    // Apply the loaded settings to the selection box and counter
+    applySettings(settings);
+});
+
+function applySettings(settings) {
+    // Update selection box color and border
+    selectionBox.style.background = settings.selectionBoxColor;
+    selectionBox.style.border = `2px dashed ${settings.borderColor}`;
+
+    // Update counter background color and text color
+    linkCountDisplay.style.background = settings.counterBgColor;
+    linkCountDisplay.style.color = settings.counterTextColor;
+}
+
 document.addEventListener('mousedown', (e) => {
     if (e.altKey && e.button === 0) { // Alt + Left Click
         isClick = true; // Set the flag to true for a click (not a drag yet)
@@ -15,16 +36,12 @@ document.addEventListener('mousedown', (e) => {
         // Create the selection box
         selectionBox = document.createElement('div');
         selectionBox.style.position = 'absolute';
-        selectionBox.style.background = 'rgba(0, 120, 215, 0.2)';
-        selectionBox.style.border = '2px dashed rgba(0, 120, 215, 0.7)';
         selectionBox.style.zIndex = '10000';
         document.body.appendChild(selectionBox);
 
         // Create the link count display
         linkCountDisplay = document.createElement('div');
         linkCountDisplay.style.position = 'absolute';
-        linkCountDisplay.style.background = '#0078d7';
-        linkCountDisplay.style.color = '#fff';
         linkCountDisplay.style.padding = '2px 5px';
         linkCountDisplay.style.borderRadius = '3px';
         linkCountDisplay.style.fontSize = '12px';
@@ -32,6 +49,16 @@ document.addEventListener('mousedown', (e) => {
         linkCountDisplay.style.pointerEvents = 'none';
         linkCountDisplay.textContent = 'Links: 0';
         document.body.appendChild(linkCountDisplay);
+
+        // Apply styles to the new elements
+        chrome.storage.sync.get({
+            selectionBoxColor: 'rgba(0, 120, 215, 0.2)',
+            borderColor: '#005a8c',
+            counterBgColor: '#0078d7',
+            counterTextColor: '#ffffff'
+        }, (settings) => {
+            applySettings(settings);
+        });
     }
 });
 
