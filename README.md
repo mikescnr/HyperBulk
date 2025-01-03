@@ -31,7 +31,7 @@ To use this extension to open multiple hyperlinks on a page, hold ALT and then c
 NOTE: It is possible to scroll on a page while dragging the box, to select even more links.
 
 # Settings
-To change settings for this extension, click the LinkSelector extension icon in Chrome, then click Settings.
+To change settings for this extension, click the extension icon in Chrome, then click Settings.
 
 Settings that can be changed are the colors of the interface, and a warning if opening above a specified threshold of links at once.
 
