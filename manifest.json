@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Link Selector",
+  "version": "1.0",
+  "description": "Open all links within a selected area on a webpage.",
+  "permissions": ["tabs"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ]
+}
