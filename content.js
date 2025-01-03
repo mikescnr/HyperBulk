@@ -1,61 +1,67 @@
 let isDragging = false;
 let startX, startY, selectionBox, linkCountDisplay;
+const defaultSelectionBoxColor = 'rgba(0, 120, 215, 0.2)';
+const defaultBorderColor = 'rgba(0, 120, 215, 0.7)';
+const defaultCounterBgColor = '#0078d7';
+const defaultCounterTextColor = '#fff';
 
-let isAltPressed = false;
+// Function to fetch colors from chrome.storage
+function getColorsFromStorage() {
+    return new Promise((resolve) => {
+        chrome.storage.sync.get(
+            {
+                selectionBoxColor: defaultSelectionBoxColor,
+                borderColor: defaultBorderColor,
+                counterBgColor: defaultCounterBgColor,
+                counterTextColor: defaultCounterTextColor
+            },
+            (settings) => {
+                resolve(settings);
+            }
+        );
+    });
+}
 
-// Listen for Alt key press and release
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Alt') {
-        isAltPressed = true;
-    }
-});
-
-document.addEventListener('keyup', (e) => {
-    if (e.key === 'Alt') {
-        isAltPressed = false;
-        // Cancel the drag when Alt is released
-        if (isDragging) {
-            isDragging = false;
-            if (selectionBox) document.body.removeChild(selectionBox);
-            if (linkCountDisplay) document.body.removeChild(linkCountDisplay);
-        }
-    }
-});
-
-// Start dragging on right-click or Alt + Left click
 document.addEventListener('mousedown', (e) => {
-    if ((e.button === 2 || (e.altKey || isAltPressed) && e.button === 0)) { // Right-click or Alt + Left-click
+    if (e.altKey && e.button === 0) { // ALT + Left Click
         isDragging = true;
         startX = e.pageX;
         startY = e.pageY;
 
-        // Prevent default behavior (like text selection or context menu)
+        // Prevent default behavior (like text selection)
         e.preventDefault();
 
-        // Create the selection box
-        selectionBox = document.createElement('div');
-        selectionBox.style.position = 'absolute';
-        selectionBox.style.background = 'rgba(0, 120, 215, 0.2)';
-        selectionBox.style.border = '2px dashed rgba(0, 120, 215, 0.7)';
-        selectionBox.style.zIndex = '10000';
-        document.body.appendChild(selectionBox);
+        // Fetch the colors before creating the box
+        getColorsFromStorage().then((settings) => {
+            const selectionBoxColor = settings.selectionBoxColor;
+            const borderColor = settings.borderColor;
+            const counterBgColor = settings.counterBgColor;
+            const counterTextColor = settings.counterTextColor;
 
-        // Create the link count display
-        linkCountDisplay = document.createElement('div');
-        linkCountDisplay.style.position = 'absolute';
-        linkCountDisplay.style.background = '#0078d7';
-        linkCountDisplay.style.color = '#fff';
-        linkCountDisplay.style.padding = '2px 5px';
-        linkCountDisplay.style.borderRadius = '3px';
-        linkCountDisplay.style.fontSize = '12px';
-        linkCountDisplay.style.fontWeight = 'bold';
-        linkCountDisplay.style.pointerEvents = 'none';
-        linkCountDisplay.textContent = 'Links: 0';
-        document.body.appendChild(linkCountDisplay);
+            // Create the selection box
+            selectionBox = document.createElement('div');
+            selectionBox.style.position = 'absolute';
+            selectionBox.style.background = selectionBoxColor;
+            selectionBox.style.border = `2px dashed ${borderColor}`;
+            selectionBox.style.zIndex = '10000';
+            document.body.appendChild(selectionBox);
+
+            // Create the link count display
+            linkCountDisplay = document.createElement('div');
+            linkCountDisplay.style.position = 'absolute';
+            linkCountDisplay.style.background = counterBgColor;
+            linkCountDisplay.style.color = counterTextColor;
+            linkCountDisplay.style.padding = '2px 5px';
+            linkCountDisplay.style.borderRadius = '3px';
+            linkCountDisplay.style.fontSize = '12px';
+            linkCountDisplay.style.fontWeight = 'bold';
+            linkCountDisplay.style.pointerEvents = 'none';
+            linkCountDisplay.textContent = 'Links: 0';
+            document.body.appendChild(linkCountDisplay);
+        });
     }
 });
 
-// Update the selection box and count of links while dragging
 document.addEventListener('mousemove', (e) => {
     if (isDragging) {
         const x = Math.min(e.pageX, startX);
@@ -78,13 +84,13 @@ document.addEventListener('mousemove', (e) => {
                 linkRect.top <= rect.bottom
             );
         });
+
         linkCountDisplay.textContent = `Links: ${links.length}`;
         linkCountDisplay.style.left = `${rect.right}px`;
         linkCountDisplay.style.top = `${rect.bottom}px`;
     }
 });
 
-// Finish dragging and open selected links
 document.addEventListener('mouseup', (e) => {
     if (isDragging) {
         isDragging = false;
@@ -101,8 +107,9 @@ document.addEventListener('mouseup', (e) => {
             );
         });
 
+        // Open the selected links
         links.forEach(link => {
-            chrome.runtime.sendMessage({ url: link.href });
+            window.open(link.href, '_blank');  // Open in new tab
         });
 
         document.body.removeChild(selectionBox);

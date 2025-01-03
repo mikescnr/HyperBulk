@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Selector Settings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            width: 300px;
+            padding: 10px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h3>Settings</h3>
+
+    <label for="boxColor">Selection Box Color</label>
+    <input type="color" id="boxColor" />
+
+    <label for="counterColor">Counter Color</label>
+    <input type="color" id="counterColor" />
+
+    <label for="triggerKey">Key to Activate (Alt, Shift, or Control)</label>
+    <input type="text" id="triggerKey" placeholder="e.g., Alt" />
+
+    <button id="saveSettings">Save Settings</button>
+
+    <script src="settings.js"></script>
+</body>
+</html>
