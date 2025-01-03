@@ -1,3 +1,5 @@
+![banner_small](https://github.com/user-attachments/assets/f5bf43b7-babd-45f1-ad79-b43e934c71e9)
+
 # Description
 This Google Chrome browser extension was created to replace LinkClump which hasn't been updated to Chrome V3 manifest and is no longer supported.
 It allows you to open multiple hyperlinks on a page at once.
