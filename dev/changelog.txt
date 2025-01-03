@@ -1,0 +1,5 @@
+1.0
+- Initial release
+
+1.0.1
+- Prevented counter from going off-screen.
