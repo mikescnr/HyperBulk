@@ -1,11 +1,11 @@
 let isDragging = false;
-let isClick = false; // New flag to check if it's a click (no drag)
+let isClick = false; // Flag for click vs drag
 let startX, startY, selectionBox, linkCountDisplay;
 
 document.addEventListener('mousedown', (e) => {
     if (e.altKey && e.button === 0) { // Alt + Left Click
-        isClick = true; // Set the flag to true for a click
-        isDragging = false; // Make sure dragging flag is false initially
+        isClick = true; // It's a click (no drag yet)
+        isDragging = false; // Reset dragging initially
         startX = e.pageX;
         startY = e.pageY;
 
@@ -36,8 +36,8 @@ document.addEventListener('mousedown', (e) => {
 });
 
 document.addEventListener('mousemove', (e) => {
-    if (isClick && !isDragging && Math.abs(e.pageX - startX) > 5 || Math.abs(e.pageY - startY) > 5) {
-        isDragging = true; // If there is significant movement, start dragging
+    if (isClick && !isDragging && (Math.abs(e.pageX - startX) > 5 || Math.abs(e.pageY - startY) > 5)) {
+        isDragging = true; // Begin dragging
     }
 
     if (isDragging) {
@@ -83,13 +83,13 @@ document.addEventListener('mousemove', (e) => {
 
 document.addEventListener('mouseup', (e) => {
     if (isClick && !isDragging) {
-        // If it's just a click and not a drag, do nothing
-        isClick = false; // Reset click flag
-        return; // Prevent link opening
+        // If it's just a click and not a drag, reset the click flag
+        isClick = false;
+        return; // Prevent opening links
     }
 
     if (isDragging) {
-        isDragging = false;
+        isDragging = false; // Reset dragging
 
         const rect = selectionBox.getBoundingClientRect();
         const links = Array.from(document.querySelectorAll('a'));
@@ -118,13 +118,15 @@ document.addEventListener('mouseup', (e) => {
 
         e.preventDefault();
     }
+
+    // Reset the flags
+    isClick = false;
 });
 
-// Cancel dragging with ESC key
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && (isClick || isDragging)) {
         isClick = false; // Reset click flag
-        isDragging = false;
+        isDragging = false; // Reset dragging flag
 
         if (selectionBox && selectionBox.parentNode) {
             document.body.removeChild(selectionBox);
@@ -142,11 +144,10 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Cancel dragging with ALT key release
 document.addEventListener('keyup', (e) => {
     if (e.key === 'Alt' && isClick) {
         isClick = false; // Reset click flag
-        isDragging = false;
+        isDragging = false; // Reset dragging flag
 
         if (selectionBox && selectionBox.parentNode) {
             document.body.removeChild(selectionBox);
