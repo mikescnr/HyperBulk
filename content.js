@@ -105,8 +105,13 @@ document.addEventListener('keydown', (e) => {
         isClick = false; // Reset click flag
         isDragging = false;
 
-        if (selectionBox) document.body.removeChild(selectionBox);
-        if (linkCountDisplay) document.body.removeChild(linkCountDisplay);
+        // Check if the selectionBox exists before attempting to remove it
+        if (selectionBox && selectionBox.parentNode) {
+            document.body.removeChild(selectionBox);
+        }
+        if (linkCountDisplay && linkCountDisplay.parentNode) {
+            document.body.removeChild(linkCountDisplay);
+        }
 
         e.preventDefault();
     }
@@ -118,7 +123,12 @@ document.addEventListener('keyup', (e) => {
         isClick = false; // Reset click flag
         isDragging = false;
 
-        if (selectionBox) document.body.removeChild(selectionBox);
-        if (linkCountDisplay) document.body.removeChild(linkCountDisplay);
+        // Check if the selectionBox exists before attempting to remove it
+        if (selectionBox && selectionBox.parentNode) {
+            document.body.removeChild(selectionBox);
+        }
+        if (linkCountDisplay && linkCountDisplay.parentNode) {
+            document.body.removeChild(linkCountDisplay);
+        }
     }
 });
