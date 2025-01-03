@@ -52,30 +52,28 @@ document.addEventListener('mousemove', (e) => {
         selectionBox.style.height = `${height}px`;
 
         const rect = selectionBox.getBoundingClientRect();
-        const links = Array.from(document.querySelectorAll('a')).filter(link => {
+
+        // Get all links in the page
+        const links = Array.from(document.querySelectorAll('a'));
+        let selectedLinks = [];
+
+        // Highlight links within the selection box
+        links.forEach(link => {
             const linkRect = link.getBoundingClientRect();
-            return (
+            if (
                 linkRect.right >= rect.left &&
                 linkRect.left <= rect.right &&
                 linkRect.bottom >= rect.top &&
                 linkRect.top <= rect.bottom
-            );
-        });
-
-        // Highlight links within the selection box
-        document.querySelectorAll('a').forEach(link => {
-            const linkRect = link.getBoundingClientRect();
-            if (linkRect.right >= rect.left &&
-                linkRect.left <= rect.right &&
-                linkRect.bottom >= rect.top &&
-                linkRect.top <= rect.bottom) {
+            ) {
                 link.style.backgroundColor = 'rgba(0, 120, 215, 0.3)'; // Highlighted background
+                selectedLinks.push(link);
             } else {
                 link.style.backgroundColor = ''; // Reset background for non-selected links
             }
         });
 
-        linkCountDisplay.textContent = `Links: ${links.length}`;
+        linkCountDisplay.textContent = `Links: ${selectedLinks.length}`;
 
         // Position the link count display relative to the cursor
         linkCountDisplay.style.left = `${e.pageX + 10}px`; // Slight offset from cursor
@@ -94,20 +92,27 @@ document.addEventListener('mouseup', (e) => {
         isDragging = false;
 
         const rect = selectionBox.getBoundingClientRect();
-        const links = Array.from(document.querySelectorAll('a')).filter(link => {
+        const links = Array.from(document.querySelectorAll('a'));
+        let selectedLinks = [];
+
+        links.forEach(link => {
             const linkRect = link.getBoundingClientRect();
-            return (
+            if (
                 linkRect.right >= rect.left &&
                 linkRect.left <= rect.right &&
                 linkRect.bottom >= rect.top &&
                 linkRect.top <= rect.bottom
-            );
+            ) {
+                selectedLinks.push(link); // Add to selected links
+            }
         });
 
-        links.forEach(link => {
+        // Open all selected links
+        selectedLinks.forEach(link => {
             window.open(link.href, '_blank');
         });
 
+        // Clean up
         document.body.removeChild(selectionBox);
         document.body.removeChild(linkCountDisplay);
 
