@@ -4,6 +4,19 @@ It allows you to open multiple hyperlinks on a page at once.
 
 ![chrome_VspsHrKOf6](https://github.com/user-attachments/assets/1075fd07-a732-4004-a3ea-7061c85cbabf)
 
+# Files
+This extension consists of the following files:
+
+| File            | Description                                           |
+|-----------------|-------------------------------------------------------|
+| `background.js` | Background service worker                             |
+| `content.js`    | The main interface/logic on pages                     |
+| `manifest.json` | Tells Chrome what the extension is called, the files to include, and so on |
+| `popup.html`    | A popup that leads to the settings page               |
+| `settings.html` | The settings page                                     |
+| `settings.js`   | The logic for the settings page                       |
+| `styles.css`    | Element styling                                       |
+
 # Installation
 To add this to Chrome, follow this guide:
 https://knowledge.workspace.google.com/kb/load-unpacked-extensions-000005962
