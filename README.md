@@ -35,8 +35,14 @@ To change settings for this extension, click the extension icon in Chrome, then 
 
 Settings that can be changed are the colors of the interface, and a warning if opening above a specified threshold of links at once.
 
-# Contributions
+# Contributions and Future Plans
 All contributions (as PRs) are welcome to fix issues, add new functionality etc.
 
-# Disclaimer
+Future plans include:
+- More customisation (label position, link highlight etc.)
+- More actions (copy/bookmark/export the selected links)
+- More accessible settings (in the popup.html)
+- Better logo
+
+# Author Disclaimer
 This extension was created with the help of ChatGPT.
