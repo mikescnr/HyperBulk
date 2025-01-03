@@ -16,6 +16,7 @@ function getColorsFromStorage() {
                 counterTextColor: defaultCounterTextColor
             },
             (settings) => {
+                console.log('Settings loaded from storage:', settings); // Add this log to check if colors are being loaded
                 resolve(settings);
             }
         );
@@ -33,10 +34,18 @@ document.addEventListener('mousedown', (e) => {
 
         // Fetch the colors before creating the box
         getColorsFromStorage().then((settings) => {
-            const selectionBoxColor = settings.selectionBoxColor;
-            const borderColor = settings.borderColor;
-            const counterBgColor = settings.counterBgColor;
-            const counterTextColor = settings.counterTextColor;
+            const selectionBoxColor = settings.selectionBoxColor || defaultSelectionBoxColor;
+            const borderColor = settings.borderColor || defaultBorderColor;
+            const counterBgColor = settings.counterBgColor || defaultCounterBgColor;
+            const counterTextColor = settings.counterTextColor || defaultCounterTextColor;
+
+            // Log the color values that are being applied
+            console.log('Colors being applied:', {
+                selectionBoxColor,
+                borderColor,
+                counterBgColor,
+                counterTextColor
+            });
 
             // Create the selection box
             selectionBox = document.createElement('div');

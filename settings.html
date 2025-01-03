@@ -3,37 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Link Selector Settings</title>
+    <title>Settings</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            width: 300px;
-            padding: 10px;
+            padding: 20px;
         }
         label {
+            margin-top: 10px;
             display: block;
-            margin: 10px 0 5px;
         }
-        input {
-            width: 100%;
-            padding: 5px;
-            margin-bottom: 10px;
+        input[type="color"] {
+            width: 60px;
+            height: 30px;
+            border: none;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #005a8c;
         }
     </style>
 </head>
 <body>
-    <h3>Settings</h3>
+    <h1>Extension Settings</h1>
+    <label for="selectionBoxColor">Selection Box Color:</label>
+    <input type="color" id="selectionBoxColor" name="selectionBoxColor" value="#0078d7">
 
-    <label for="boxColor">Selection Box Color</label>
-    <input type="color" id="boxColor" />
+    <label for="borderColor">Border Color:</label>
+    <input type="color" id="borderColor" name="borderColor" value="#005a8c">
 
-    <label for="counterColor">Counter Color</label>
-    <input type="color" id="counterColor" />
+    <label for="counterBgColor">Counter Background Color:</label>
+    <input type="color" id="counterBgColor" name="counterBgColor" value="#0078d7">
 
-    <label for="triggerKey">Key to Activate (Alt, Shift, or Control)</label>
-    <input type="text" id="triggerKey" placeholder="e.g., Alt" />
+    <label for="counterTextColor">Counter Text Color:</label>
+    <input type="color" id="counterTextColor" name="counterTextColor" value="#ffffff">
 
-    <button id="saveSettings">Save Settings</button>
+    <button id="save-button">Save Settings</button>
 
     <script src="settings.js"></script>
 </body>
