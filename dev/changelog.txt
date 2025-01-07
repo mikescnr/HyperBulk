@@ -3,3 +3,6 @@
 
 1.0.1
 - Prevented counter from going off-screen.
+
+1.0.2
+- UI no longer shows before dragging begins.
