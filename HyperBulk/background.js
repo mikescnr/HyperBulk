@@ -23,7 +23,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'keyEvent') {
     // Handle any key events or other custom events if needed
     // Example: message.data could be the pressed key info
-    console.log('Received key event:', message.data);
+    // console.log('Received key event:', message.data);
   }
   sendResponse({ status: 'received' });
 });
