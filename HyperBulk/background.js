@@ -5,7 +5,7 @@ chrome.runtime.onInstalled.addListener(() => {
   // Create the context menu item
   chrome.contextMenus.create({
     id: 'openSettings',
-    title: 'Open Link Selector Settings',
+    title: 'HyperBulk Settings',
     contexts: ['all']
   });
 });
